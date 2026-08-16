@@ -38,12 +38,12 @@
     justify-content:center;
     padding:18px 12px 60px;
   }
-  .wrap{width:100%;max-width:480px;}
+  .wrap{width:100%;max-width:680px;}
   h1,h2,h3{font-family:'Cinzel', serif; margin:0; letter-spacing:0.03em;}
   .title-block{text-align:center; margin-bottom:6px;}
   .title-block h1{
     font-family:'Cinzel Decorative', serif;
-    font-size:34px;
+    font-size:36px;
     color:var(--wine-dark);
     text-shadow: 1px 1px 0 rgba(255,255,255,0.25);
   }
@@ -55,7 +55,7 @@
   .stat-card svg{width:20px;height:20px;display:block;margin:0 auto 4px;}
   .stat-card .num{font-family:'Cinzel', serif; font-weight:700; font-size:19px; color:var(--wine-dark);}
   .stat-card .lbl{font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft);}
-  .passive-line{text-align:center; font-size:11.5px; color:var(--ink-soft); margin-bottom:16px;}
+  .passive-line{text-align:center; font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:16px;}
 
   .panel{background:var(--parchment-dark); border:1px solid var(--parchment-darker); border-radius:8px; padding:14px; margin-bottom:16px;}
   .panel h2{font-size:16px; color:var(--wine-dark); display:flex; align-items:center; gap:8px;}
@@ -64,43 +64,70 @@
 
   .timer-row{display:flex; align-items:center; gap:12px;}
   .timer-display{font-family:'Cinzel', serif; font-size:26px; font-weight:700; color:var(--ink); min-width:92px;}
-  button{font-family:'Cinzel', serif; font-size:13px; letter-spacing:0.03em; border:none; border-radius:6px; padding:10px 16px; cursor:pointer; color:#f2e9d0; background:var(--wine); box-shadow:0 2px 0 var(--wine-dark); transition:transform 0.05s ease;}
+  button{font-family:'Cinzel', serif; font-size:12px; letter-spacing:0.03em; border:none; border-radius:6px; padding:8px 14px; cursor:pointer; color:#f2e9d0; background:var(--wine); box-shadow:0 2px 0 var(--wine-dark); transition:transform 0.05s ease;}
   button:active{transform:translateY(2px); box-shadow:0 0 0 var(--wine-dark);}
   button.secondary{background:var(--forest); box-shadow:0 2px 0 #29371e;}
   button.secondary:active{box-shadow:0 0 0 #29371e;}
   button:disabled{background:var(--stone); box-shadow:0 2px 0 var(--stone-dark); cursor:not-allowed; opacity:0.7;}
-  button:disabled:active{transform:none;}
 
-  .map-container{position:relative; width:100%; aspect-ratio:4/5; background:var(--parchment-dark); border:1px solid var(--parchment-darker); border-radius:8px; overflow:hidden;}
-  .map-container svg{position:absolute; inset:0; width:100%; height:100%;}
+  /* Expanded Large Map Viewport */
+  .map-container{
+    position:relative;
+    width:100%;
+    height:560px;
+    background:var(--parchment-dark);
+    border:2px solid var(--parchment-darker);
+    border-radius:8px;
+    overflow:hidden;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.08);
+  }
+  .map-container svg{position:absolute; inset:0; width:100%; height:100%; pointer-events:none;}
+  
   .node{
     position:absolute;
-    width:46px; height:46px;
+    width:48px; height:48px;
     transform:translate(-50%,-50%);
     border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
     cursor:pointer;
     background:var(--stone);
     border:2px dashed var(--ink-soft);
+    box-shadow:0 2px 5px rgba(0,0,0,0.2);
+    transition: transform 0.15s ease, outline 0.1s ease;
+    z-index: 2;
   }
+  .node:hover{transform:translate(-50%,-50%) scale(1.1); z-index:5;}
   .node.owned{background:var(--forest); border-color:var(--gold); border-style:solid;}
   .node.attackable{background:var(--gold-light); border-color:var(--wine-dark); border-style:solid;}
-  .node.fog{background:var(--stone-dark);}
-  .node.selected{outline:3px solid var(--wine); outline-offset:2px;}
-  .node svg{width:20px;height:20px; color:#f2ecd6;}
-  .node.fog svg{opacity:0.5;}
+  .node.fog{background:var(--stone-dark); opacity:0.65;}
+  .node.selected{outline:3px solid var(--wine); outline-offset:3px;}
+  .node .type-icon{font-size:14px; line-height:1;}
+  
   .node-label{
     position:absolute; transform:translate(-50%,0); top:100%; margin-top:2px;
-    font-family:'Cinzel', serif; font-size:9px; text-align:center; width:70px;
-    color:var(--ink-soft); pointer-events:none;
+    font-family:'Cinzel', serif; font-size:9.5px; font-weight:700; text-align:center; width:90px;
+    color:var(--ink); pointer-events:none; text-shadow:0 1px 2px rgba(255,255,255,0.8);
+    z-index:3;
   }
   .node-def{
-    position:absolute; top:-16px; left:50%; transform:translateX(-50%);
-    font-size:9.5px; font-weight:600; color:var(--wine-dark); pointer-events:none;
-    background:var(--parchment); padding:0 3px; border-radius:3px;
+    position:absolute; top:-14px; left:50%; transform:translateX(-50%);
+    font-size:9px; font-weight:700; color:var(--wine-dark); pointer-events:none;
+    background:var(--parchment); padding:1px 4px; border-radius:3px; border:1px solid var(--parchment-darker);
+    white-space:nowrap; z-index:3;
+  }
+  .node-yield{
+    position:absolute; bottom:-16px; left:50%; transform:translateX(-50%);
+    font-size:8px; font-weight:600; color:var(--ink-soft); pointer-events:none;
+    background:rgba(233, 220, 184, 0.9); padding:0px 3px; border-radius:3px; white-space:nowrap;
+    z-index:3;
   }
 
-  .siege-panel{margin-top:14px; padding-top:12px; border-top:1px dashed var(--parchment-darker);}
+  .action-panel{margin-top:14px; padding-top:12px; border-top:1px dashed var(--parchment-darker);}
+  .action-grid{display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px;}
+  .upg-card{background:var(--parchment); border:1px solid var(--parchment-darker); padding:8px; border-radius:6px; text-align:center;}
+  .upg-card h4{font-size:11px; margin-bottom:4px; color:var(--wine-dark);}
+  .upg-card p{font-size:10px; margin:2px 0 6px; color:var(--ink-soft);}
+
   .siege-row{display:flex; justify-content:space-between; font-size:13px; margin:4px 0;}
   .siege-row span:last-child{font-weight:600;}
   .send-row{display:flex; align-items:center; gap:8px; margin-top:10px;}
@@ -111,16 +138,17 @@
   .need-more{font-size:12px; color:var(--wine-dark); margin-top:6px;}
 
   .marches{margin-top:12px;}
-  .march-row{display:flex; justify-content:space-between; align-items:center; font-size:12.5px; padding:6px 0; border-bottom:1px solid var(--parchment-darker);}
+  .march-row{display:flex; justify-content:space-between; align-items:center; font-size:12px; padding:6px 0; border-bottom:1px solid var(--parchment-darker);}
+  .march-row.ai-march{color:var(--wine-dark); font-weight:600;}
   .march-row:last-child{border-bottom:none;}
   .march-eta{font-family:'Cinzel', serif; font-weight:700; color:var(--wine-dark);}
 
-  .log{max-height:110px; overflow-y:auto; font-size:12px; color:var(--ink-soft);}
+  .log{max-height:120px; overflow-y:auto; font-size:11.5px; color:var(--ink-soft);}
   .log div{padding:3px 0; border-bottom:1px dashed var(--parchment-darker);}
   .log div:last-child{border-bottom:none;}
 
-  .legend{display:flex; gap:14px; flex-wrap:wrap; font-size:11px; color:var(--ink-soft); margin-top:10px;}
-  .legend span{display:inline-flex; align-items:center; gap:5px;}
+  .legend{display:flex; gap:12px; flex-wrap:wrap; font-size:11px; color:var(--ink-soft); margin-top:10px; justify-content:center;}
+  .legend span{display:inline-flex; align-items:center; gap:4px;}
   .swatch{width:11px;height:11px;border-radius:50%; display:inline-block;}
 
   .footer{text-align:center; margin-top:10px;}
@@ -166,7 +194,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2c-1 2-4 3-4 6 0 2 1.5 3 1.5 5C9.5 15 8 15.5 8 18a4 4 0 008 0c0-2.5-1.5-3-1.5-5 0-2 1.5-3 1.5-5 0-3-3-4-4-6z"/></svg>
       Study session
     </h2>
-    <p class="sub">Study time becomes troops and supplies for your campaign.</p>
+    <p class="sub">Study time produces troops and supplies for your campaign and defenses.</p>
     <div class="timer-row">
       <div class="timer-display" id="timerDisplay">00:00</div>
       <button id="startBtn" onclick="startSession()">Begin study</button>
@@ -179,34 +207,59 @@
   <div class="panel">
     <h2>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/></svg>
-      The map
+      The realm map
     </h2>
-    <p class="sub">Provinces are linked by roads. Send armies down the roads to lay siege &mdash; they take real time to arrive.</p>
+    <p class="sub">Select provinces to attack enemy positions or upgrade your domain's Infrastructure, Economy, and Garrisons.</p>
     <div class="map-container" id="mapContainer">
       <svg id="roadsSvg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
     </div>
     <div class="legend">
-      <span><span class="swatch" style="background:var(--forest)"></span>Your land</span>
-      <span><span class="swatch" style="background:var(--gold-light)"></span>Can attack</span>
-      <span><span class="swatch" style="background:var(--stone)"></span>Enemy</span>
+      <span><span class="swatch" style="background:var(--forest)"></span>Your Land</span>
+      <span><span class="swatch" style="background:var(--gold-light)"></span>Can Attack</span>
+      <span><span class="swatch" style="background:var(--stone)"></span>Enemy Territory</span>
       <span><span class="swatch" style="background:var(--stone-dark)"></span>Unscouted</span>
     </div>
 
-    <div class="siege-panel" id="siegePanel" style="display:none;">
-      <h3 id="siegeName" style="font-size:14px; color:var(--wine-dark);"></h3>
-      <div class="siege-row"><span>Defense</span><span id="siegeDefense">-</span></div>
-      <div class="siege-row"><span>Supply cost</span><span id="siegeCost">-</span></div>
-      <div class="siege-row"><span>March time</span><span id="siegeTime">-</span></div>
-      <div class="send-row">
-        <label for="troopInput" style="font-size:12.5px;">Send troops:</label>
-        <input type="number" id="troopInput" min="1">
+    <!-- Upgrade / Attack Action Panel -->
+    <div class="action-panel" id="actionPanel" style="display:none;">
+      <h3 id="panelTitle" style="font-size:15px; color:var(--wine-dark);"></h3>
+      <p id="panelSub" style="font-size:12px; color:var(--ink-soft); margin:2px 0 8px;"></p>
+      
+      <div id="playerUpgSection" style="display:none;">
+        <div class="action-grid">
+          <div class="upg-card">
+            <h4>🪙 Economy (Lvl <span id="econLvl">1</span>)</h4>
+            <p>Yield: +<span id="econYield">0</span> supplies/hr</p>
+            <button id="upgEconBtn" onclick="upgradeProvince('econ')">Upgrade</button>
+          </div>
+          <div class="upg-card">
+            <h4>⚔️ Industry (Lvl <span id="indLvl">1</span>)</h4>
+            <p>Yield: +<span id="indYield">0</span> troops/hr</p>
+            <button id="upgIndBtn" onclick="upgradeProvince('ind')">Upgrade</button>
+          </div>
+          <div class="upg-card" style="grid-column: span 2;">
+            <h4>🏰 Fortification (Lvl <span id="fortLvl">1</span>)</h4>
+            <p>Garrison Def: <span id="fortDef">0</span> troops</p>
+            <button id="upgFortBtn" onclick="upgradeProvince('fort')">Fortify Garrison</button>
+          </div>
+        </div>
       </div>
-      <div id="siegeMsg" class="need-more"></div>
-      <button id="siegeBtn" style="margin-top:10px;" onclick="dispatchMarch()">Send army</button>
+
+      <div id="siegeSection" style="display:none;">
+        <div class="siege-row"><span>Garrison Defense</span><span id="siegeDefense">-</span></div>
+        <div class="siege-row"><span>Supply Cost</span><span id="siegeCost">-</span></div>
+        <div class="siege-row"><span>March Duration</span><span id="siegeTime">-</span></div>
+        <div class="send-row">
+          <label for="troopInput" style="font-size:12.5px;">Send troops:</label>
+          <input type="number" id="troopInput" min="1">
+        </div>
+        <div id="siegeMsg" class="need-more"></div>
+        <button id="siegeBtn" style="margin-top:10px;" onclick="dispatchMarch()">Dispatch Attack Army</button>
+      </div>
     </div>
 
     <div class="marches" id="marchesBox" style="display:none;">
-      <h3 style="font-size:13px; color:var(--wine-dark); margin-bottom:4px;">Armies marching</h3>
+      <h3 style="font-size:13px; color:var(--wine-dark); margin-bottom:4px;">Armies Marching</h3>
       <div id="marchesList"></div>
     </div>
 
@@ -223,36 +276,47 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'inkIronState_v2';
-const NAMES = ['Ashfall Keep','Ravenscar','Thornfield','Grimhold','Duskmere','Ironvale','Blackmoor','Stormwatch','Fenwick Hollow','Silverpine','Crowsend','Oakhaven'];
+const STORAGE_KEY = 'inkIronState_v3';
+
+// 24 Map Nodes with Diverse Positions across an expanded Map Grid
+const NAMES = [
+  'Ashfall Keep','Ravenscar','Thornfield','Grimhold','Duskmere','Ironvale',
+  'Blackmoor','Stormwatch','Fenwick Hollow','Silverpine','Crowsend','Oakhaven',
+  'Sunforge','Frostpeak','Emberfall','Dreadfort','Verdant Reach','Wyrmrest',
+  'Gilded Harbor','Shadowfen','Highfort','Ironforge','Blightwood','Dawnstar'
+];
+
+// Province Types & Specializations
+const PROV_TYPES = {
+  fortress: { name: 'Fortress', icon: '🏰', defMult: 1.8, econBase: 2, indBase: 2 },
+  trade:    { name: 'Trade Hub', icon: '🪙', defMult: 1.0, econBase: 8, indBase: 1 },
+  mine:     { name: 'Iron Mine', icon: '⚔️', defMult: 1.1, econBase: 1, indBase: 8 },
+  fertile:  { name: 'Fertile Basin', icon: '🌾', defMult: 1.0, econBase: 5, indBase: 5 },
+  outpost:  { name: 'Outpost', icon: '🛖', defMult: 1.2, econBase: 3, indBase: 3 }
+};
+
 const POSITIONS = [
-  {x:14,y:82},{x:32,y:64},{x:52,y:72},{x:70,y:56},
-  {x:14,y:52},{x:36,y:38},{x:58,y:30},{x:82,y:42},
-  {x:28,y:16},{x:50,y:10},{x:74,y:14},{x:92,y:64}
+  {x:12,y:85},{x:28,y:88},{x:48,y:82},{x:70,y:88},{x:88,y:82},
+  {x:10,y:65},{x:30,y:68},{x:50,y:64},{x:72,y:66},{x:90,y:62},
+  {x:15,y:45},{x:34,y:48},{x:52,y:44},{x:70,y:46},{x:88,y:42},
+  {x:12,y:26},{x:32,y:28},{x:50,y:22},{x:68,y:26},{x:88,y:22},
+  {x:22,y:10},{x:42,y:08},{x:62,y:10},{x:82,y:08}
 ];
+
 const EDGES = [
-  [0,1],[0,4],
-  [1,2],[1,4],[1,5],
-  [2,3],[2,5],
-  [3,6],[3,7],[3,11],
-  [4,5],
-  [5,6],[5,8],
-  [6,7],[6,9],
-  [7,10],[7,11],
-  [8,9],
-  [9,10],
-  [10,11]
+  [0,1],[0,5],[1,2],[1,6],[2,3],[2,7],[3,4],[3,8],[4,9],
+  [5,6],[5,10],[6,7],[6,11],[7,8],[7,12],[8,9],[8,13],[9,14],
+  [10,11],[10,15],[11,12],[11,16],[12,13],[12,17],[13,14],[13,18],[14,19],
+  [15,16],[15,20],[16,17],[16,20],[16,21],[17,18],[17,21],[17,22],[18,19],[18,22],[18,23],[19,23],
+  [20,21],[21,22],[22,23]
 ];
+
 const TROOPS_PER_MIN = 2;
 const SUPPLIES_PER_MIN = 0.5;
 const SIEGE_SUPPLY_COST = 12;
-const GROWTH_INTERVAL_MS = 15 * 60 * 1000;
-const GROWTH_AMOUNT = 1;
-const GROWTH_CAP_MULT = 2.5;
-const PER_HOP_MARCH_MS = 6 * 60 * 1000;
+const PER_HOP_MARCH_MS = 4 * 60 * 1000;
 
 let adjacency = [];
-let graphDist = [];
 let state = null;
 let selectedId = null;
 let timerInterval = null;
@@ -260,37 +324,48 @@ let timerInterval = null;
 function buildGraph(){
   adjacency = NAMES.map(()=>[]);
   EDGES.forEach(([a,b])=>{ adjacency[a].push(b); adjacency[b].push(a); });
-  graphDist = NAMES.map(()=>Infinity);
-  graphDist[0] = 0;
-  const queue = [0];
-  while(queue.length){
-    const cur = queue.shift();
-    adjacency[cur].forEach(n=>{
-      if(graphDist[n] === Infinity){ graphDist[n] = graphDist[cur]+1; queue.push(n); }
-    });
-  }
-}
-
-function baseDefenseFor(i){
-  const d = graphDist[i];
-  return 15 + d*22 + ((i*7)%13);
 }
 
 function freshState(){
+  // Choose random starting location for player
+  const startIdx = Math.floor(Math.random() * NAMES.length);
+  
+  const typeKeys = Object.keys(PROV_TYPES);
   const provinces = [];
-  for(let i=0;i<NAMES.length;i++){
-    const base = i===0 ? 0 : baseDefenseFor(i);
-    const d = graphDist[i];
+  
+  for(let i=0; i<NAMES.length; i++){
+    const typeKey = typeKeys[(i * 3 + 1) % typeKeys.length];
+    const isPlayer = (i === startIdx);
+    
     provinces.push({
-      id:i, name:NAMES[i], owner: i===0 ? 'player' : 'enemy',
-      baseDefense:base, defense:base, lastGrowth:Date.now(),
-      economy: 3 + d, industry: 2 + d
+      id: i,
+      name: NAMES[i],
+      type: typeKey,
+      owner: isPlayer ? 'player' : 'enemy',
+      defense: isPlayer ? 20 : 15 + Math.floor(Math.random() * 20),
+      econLvl: 1,
+      indLvl: 1,
+      fortLvl: 1,
+      lastGrowth: Date.now()
     });
   }
+
   return {
-    troops:10, supplies:10, totalMinutes:0, sessionStart:null,
-    provinces, marches:[], log:[], lastPassiveTick:Date.now()
+    startIdx,
+    troops: 25, supplies: 30, totalMinutes: 0, sessionStart: null,
+    provinces, marches: [], log: ["Campaign commenced. Your domain awaits your command!"],
+    lastPassiveTick: Date.now(), lastAITick: Date.now()
   };
+}
+
+function getEconYield(p){
+  const base = PROV_TYPES[p.type].econBase;
+  return base + (p.econLvl - 1) * 3;
+}
+
+function getIndYield(p){
+  const base = PROV_TYPES[p.type].indBase;
+  return base + (p.indLvl - 1) * 3;
 }
 
 function load(){
@@ -300,49 +375,118 @@ function load(){
   if(!state.marches) state.marches = [];
   if(!state.log) state.log = [];
   if(!state.lastPassiveTick) state.lastPassiveTick = Date.now();
-  applyGrowth();
+  if(!state.lastAITick) state.lastAITick = Date.now();
   applyPassive();
+  applyAI();
   resolveMarches();
   save();
 }
-function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
-function applyGrowth(){
-  const now = Date.now();
-  state.provinces.forEach(p=>{
-    if(p.owner !== 'enemy') return;
-    const elapsed = now - (p.lastGrowth || now);
-    const ticks = Math.floor(elapsed / GROWTH_INTERVAL_MS);
-    if(ticks > 0){
-      const cap = p.baseDefense * GROWTH_CAP_MULT;
-      p.defense = Math.min(cap, p.defense + ticks*GROWTH_AMOUNT);
-      p.lastGrowth = p.lastGrowth + ticks*GROWTH_INTERVAL_MS;
-    }
-  });
-}
+function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
 function applyPassive(){
   const now = Date.now();
   const hours = (now - state.lastPassiveTick) / 3600000;
   if(hours <= 0) return;
-  let econ = 0, ind = 0;
-  state.provinces.forEach(p=>{ if(p.owner==='player'){ econ += p.economy; ind += p.industry; } });
-  state.supplies += econ * hours;
-  state.troops += ind * hours;
+
+  let econTotal = 0, indTotal = 0;
+  state.provinces.forEach(p => {
+    if(p.owner === 'player'){
+      econTotal += getEconYield(p);
+      indTotal += getIndYield(p);
+    }
+  });
+
+  state.supplies += econTotal * hours;
+  state.troops += indTotal * hours;
   state.lastPassiveTick = now;
+}
+
+// Active AI Strategy & Expansion Engine
+function applyAI(){
+  const now = Date.now();
+  const elapsedMinutes = (now - state.lastAITick) / 60000;
+  if(elapsedMinutes < 0.5) return; // AI acts roughly every 30s
+  state.lastAITick = now;
+
+  const enemyProvinces = state.provinces.filter(p => p.owner === 'enemy');
+  if(!enemyProvinces.length) return;
+
+  // 1. Enemy Passive Troop Reinforcement & Upgrades
+  enemyProvinces.forEach(p => {
+    const ind = getIndYield(p);
+    p.defense += (ind * (elapsedMinutes / 60)); // AI generates defense troops
+    
+    // AI Auto-upgrades its forts if defense is high
+    if(p.defense > 50 && Math.random() < 0.3){
+      p.fortLvl += 1;
+      p.defense += 15;
+    }
+  });
+
+  // 2. AI Aggression Logic: AI looks for player neighbors to attack
+  enemyProvinces.forEach(aiProv => {
+    if(aiProv.defense < 35) return; // Need minimum army strength to launch assault
+
+    const nbrs = adjacency[aiProv.id];
+    const playerTarget = nbrs.map(id => state.provinces[id]).find(p => p.owner === 'player');
+
+    if(playerTarget){
+      // Check if AI army significantly outweighs player garrison
+      if(aiProv.defense > playerTarget.defense * 1.25){
+        const attackForce = Math.floor(aiProv.defense * 0.65);
+        aiProv.defense -= attackForce; // Deduct force from garrison
+
+        const arriveTime = Date.now() + PER_HOP_MARCH_MS;
+        state.marches.push({
+          fromId: aiProv.id,
+          toId: playerTarget.id,
+          fromName: aiProv.name,
+          toName: playerTarget.name,
+          troops: attackForce,
+          arriveTime,
+          owner: 'enemy'
+        });
+
+        addLog(`⚠️ Enemy march detected! ${attackForce} troops dispatched from ${aiProv.name} toward ${playerTarget.name}!`);
+      }
+    }
+  });
 }
 
 function resolveMarches(){
   const now = Date.now();
   const remaining = [];
-  state.marches.forEach(m=>{
+
+  state.marches.forEach(m => {
     if(m.arriveTime <= now){
       const p = state.provinces[m.toId];
-      if(m.troops >= p.defense){
-        p.owner = 'player';
-        addLog('Your army took ' + p.name + ' (' + m.troops + ' vs ' + Math.round(p.defense) + ').');
-      } else {
-        addLog('The assault on ' + p.name + ' failed (' + m.troops + ' vs ' + Math.round(p.defense) + ').');
+      if(m.owner === 'player'){
+        if(p.owner === 'enemy'){
+          if(m.troops >= Math.round(p.defense)){
+            p.owner = 'player';
+            p.defense = Math.round(m.troops - p.defense * 0.5); // Remaining troops occupy node
+            addLog(`⚔️ Conquest! Your forces captured ${p.name} (${m.troops} vs ${Math.round(p.defense)} defense).`);
+          } else {
+            p.defense -= Math.round(m.troops * 0.6); // Inflict casualties
+            addLog(`💥 Assault failed on ${p.name}. Your attack army was repelled (${m.troops} vs ${Math.round(p.defense)} defense).`);
+          }
+        } else {
+          // Reinforcing player node
+          p.defense += m.troops;
+          addLog(`🛡️ Reinforcements arrived at ${p.name} (+${m.troops} troops).`);
+        }
+      } else if(m.owner === 'enemy'){
+        if(p.owner === 'player'){
+          if(m.troops >= Math.round(p.defense)){
+            p.owner = 'enemy';
+            p.defense = Math.round(m.troops - p.defense * 0.5);
+            addLog(`🚨 Lost territory! Enemy forces conquered ${p.name}!`);
+          } else {
+            p.defense -= Math.round(m.troops * 0.6);
+            addLog(`🛡️ Defense held! Your garrison at ${p.name} repelled the enemy invasion!`);
+          }
+        }
       }
     } else {
       remaining.push(m);
@@ -353,14 +497,12 @@ function resolveMarches(){
 
 function addLog(text){
   state.log.unshift(text);
-  if(state.log.length > 8) state.log.length = 8;
+  if(state.log.length > 10) state.log.length = 10;
 }
-
-function neighbors(i){ return adjacency[i]; }
 
 function isAttackable(p){
   if(p.owner !== 'enemy') return false;
-  return neighbors(p.id).some(n => state.provinces[n].owner === 'player');
+  return adjacency[p.id].some(n => state.provinces[n].owner === 'player');
 }
 function isRevealed(p){ if(p.owner==='player') return true; return isAttackable(p); }
 function fmtNum(n){ return Math.round(n).toLocaleString(); }
@@ -374,10 +516,11 @@ function renderStats(){
   document.getElementById('statTroops').textContent = fmtNum(state.troops);
   document.getElementById('statSupplies').textContent = fmtNum(state.supplies);
   document.getElementById('statHours').textContent = (state.totalMinutes/60).toFixed(1);
+  
   let econ=0, ind=0;
-  state.provinces.forEach(p=>{ if(p.owner==='player'){ econ+=p.economy; ind+=p.industry; } });
+  state.provinces.forEach(p=>{ if(p.owner==='player'){ econ += getEconYield(p); ind += getIndYield(p); } });
   document.getElementById('passiveLine').textContent =
-    'Your provinces yield +' + econ.toFixed(1) + ' supplies/hr and +' + ind.toFixed(1) + ' troops/hr';
+    'Domain Yield: +' + econ.toFixed(0) + ' supplies/hr | +' + ind.toFixed(0) + ' troops/hr';
 }
 
 function renderRoads(){
@@ -385,19 +528,21 @@ function renderRoads(){
   let lines = '';
   EDGES.forEach(([a,b])=>{
     const pa = POSITIONS[a], pb = POSITIONS[b];
-    lines += '<line x1="'+pa.x+'" y1="'+pa.y+'" x2="'+pb.x+'" y2="'+pb.y+'" stroke="#8a7752" stroke-width="0.6" stroke-dasharray="2,1.6" />';
+    lines += `<line x1="${pa.x}%" y1="${pa.y}%" x2="${pb.x}%" y2="${pb.y}%" stroke="#8a7752" stroke-width="1.2" stroke-dasharray="3,2" opacity="0.65" />`;
   });
   svg.innerHTML = lines;
 }
 
 function renderMap(){
   const container = document.getElementById('mapContainer');
-  container.querySelectorAll('.node, .node-label').forEach(el=>el.remove());
+  container.querySelectorAll('.node, .node-label, .node-def, .node-yield').forEach(el=>el.remove());
   const won = state.provinces.every(p=>p.owner==='player');
 
   state.provinces.forEach(p=>{
     const pos = POSITIONS[p.id];
     const revealed = isRevealed(p);
+    const typeInfo = PROV_TYPES[p.type];
+
     const node = document.createElement('div');
     node.className = 'node';
     if(p.owner==='player') node.classList.add('owned');
@@ -407,18 +552,26 @@ function renderMap(){
     node.style.left = pos.x+'%';
     node.style.top = pos.y+'%';
 
-    let inner = '';
-    if(p.owner==='player'){
-      inner += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21V10l3-2v3h2V8l3-2 3 2v3h2V8l3 2v11H4z"/></svg>';
-    } else if(revealed){
-      inner += '<div class="node-def">'+fmtNum(p.defense)+'</div>';
-      inner += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l7 4v6c0 5-3 8-7 10-4-2-7-5-7-10V6l7-4z"/></svg>';
-    } else {
-      inner += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="12" r="5"/></svg>';
-    }
-    node.innerHTML = inner;
+    node.innerHTML = `<span class="type-icon">${typeInfo.icon}</span>`;
     node.onclick = () => selectProvince(p.id);
     container.appendChild(node);
+
+    // Garrison Badge
+    if(revealed){
+      const defBadge = document.createElement('div');
+      defBadge.className = 'node-def';
+      defBadge.style.left = pos.x+'%';
+      defBadge.style.top = pos.y+'%';
+      defBadge.textContent = fmtNum(p.defense) + ' ⚔️';
+      container.appendChild(defBadge);
+
+      const yieldBadge = document.createElement('div');
+      yieldBadge.className = 'node-yield';
+      yieldBadge.style.left = pos.x+'%';
+      yieldBadge.style.top = pos.y+'%';
+      yieldBadge.textContent = `+${getEconYield(p)}🪙 +${getIndYield(p)}⚔️`;
+      container.appendChild(yieldBadge);
+    }
 
     const label = document.createElement('div');
     label.className = 'node-label';
@@ -430,40 +583,99 @@ function renderMap(){
 
   const banner = document.getElementById('victoryBanner');
   banner.innerHTML = won
-    ? '<div class="victory"><h2>The realm is united</h2><p>Every province flies your banner. Start a new campaign to conquer again.</p></div>'
+    ? '<div class="victory"><h2>The Realm is United!</h2><p>Every province flies your banner. Start a new campaign to conquer again.</p></div>'
     : '';
 }
 
 function selectProvince(id){
   const p = state.provinces[id];
-  if(!isRevealed(p) || p.owner==='player'){
+  if(!isRevealed(p)){
     selectedId = null;
-    document.getElementById('siegePanel').style.display = 'none';
+    document.getElementById('actionPanel').style.display = 'none';
     renderMap();
     return;
   }
   selectedId = id;
   renderMap();
-  renderSiegePanel();
+  renderActionPanel();
 }
 
-function renderSiegePanel(){
-  const panel = document.getElementById('siegePanel');
+function renderActionPanel(){
+  const panel = document.getElementById('actionPanel');
   if(selectedId===null){ panel.style.display='none'; return; }
+  
   const p = state.provinces[selectedId];
+  const typeInfo = PROV_TYPES[p.type];
   panel.style.display = 'block';
-  document.getElementById('siegeName').textContent = p.name;
-  document.getElementById('siegeDefense').textContent = fmtNum(p.defense) + ' troops';
-  document.getElementById('siegeCost').textContent = SIEGE_SUPPLY_COST + ' supplies';
-  document.getElementById('siegeTime').textContent = fmtDuration(graphDist[p.id] * PER_HOP_MARCH_MS);
 
-  const input = document.getElementById('troopInput');
-  input.max = Math.floor(state.troops);
-  if(!input.value || Number(input.value) > state.troops){
-    input.value = Math.min(Math.floor(state.troops), Math.ceil(p.defense));
+  document.getElementById('panelTitle').textContent = `${typeInfo.icon} ${p.name} (${typeInfo.name})`;
+  
+  const playerUpgSection = document.getElementById('playerUpgSection');
+  const siegeSection = document.getElementById('siegeSection');
+
+  if(p.owner === 'player'){
+    document.getElementById('panelSub').textContent = "Your territory. Upgrade Infrastructure or fortify garrison.";
+    playerUpgSection.style.display = 'block';
+    siegeSection.style.display = 'none';
+
+    document.getElementById('econLvl').textContent = p.econLvl;
+    document.getElementById('econYield').textContent = getEconYield(p);
+    document.getElementById('upgEconBtn').textContent = `Upg (${(p.econLvl * 15)} supps)`;
+
+    document.getElementById('indLvl').textContent = p.indLvl;
+    document.getElementById('indYield').textContent = getIndYield(p);
+    document.getElementById('upgIndBtn').textContent = `Upg (${(p.indLvl * 15)} supps)`;
+
+    document.getElementById('fortLvl').textContent = p.fortLvl;
+    document.getElementById('fortDef').textContent = fmtNum(p.defense);
+    document.getElementById('upgFortBtn').textContent = `Fortify (${(p.fortLvl * 12)} supps)`;
+  } else {
+    document.getElementById('panelSub').textContent = "Hostile territory. Prepare march forces to invade.";
+    playerUpgSection.style.display = 'none';
+    siegeSection.style.display = 'block';
+
+    document.getElementById('siegeDefense').textContent = fmtNum(p.defense) + ' troops';
+    document.getElementById('siegeCost').textContent = SIEGE_SUPPLY_COST + ' supplies';
+    document.getElementById('siegeTime').textContent = fmtDuration(PER_HOP_MARCH_MS);
+
+    const input = document.getElementById('troopInput');
+    input.max = Math.floor(state.troops);
+    if(!input.value || Number(input.value) > state.troops){
+      input.value = Math.min(Math.floor(state.troops), Math.ceil(p.defense));
+    }
+    updateSiegeMsg();
+    input.oninput = updateSiegeMsg;
   }
-  updateSiegeMsg();
-  input.oninput = updateSiegeMsg;
+}
+
+function upgradeProvince(type){
+  if(selectedId === null) return;
+  const p = state.provinces[selectedId];
+  if(p.owner !== 'player') return;
+
+  if(type === 'econ'){
+    const cost = p.econLvl * 15;
+    if(state.supplies < cost) return alert("Not enough supplies!");
+    state.supplies -= cost;
+    p.econLvl += 1;
+    addLog(`🪙 Upgraded Economy at ${p.name} to Level ${p.econLvl}.`);
+  } else if(type === 'ind'){
+    const cost = p.indLvl * 15;
+    if(state.supplies < cost) return alert("Not enough supplies!");
+    state.supplies -= cost;
+    p.indLvl += 1;
+    addLog(`⚔️ Upgraded Industry at ${p.name} to Level ${p.indLvl}.`);
+  } else if(type === 'fort'){
+    const cost = p.fortLvl * 12;
+    if(state.supplies < cost) return alert("Not enough supplies!");
+    state.supplies -= cost;
+    p.fortLvl += 1;
+    p.defense += 20; // Adds 20 garrison defense troops directly
+    addLog(`🏰 Fortified ${p.name}. Garrison defenses increased!`);
+  }
+
+  save();
+  renderAll();
 }
 
 function updateSiegeMsg(){
@@ -472,10 +684,12 @@ function updateSiegeMsg(){
   const input = document.getElementById('troopInput');
   const sending = Number(input.value) || 0;
   const shortSupplies = Math.max(0, SIEGE_SUPPLY_COST - state.supplies);
+  
   let problems = [];
   if(sending <= 0) problems.push('enter at least 1 troop');
-  if(sending > state.troops) problems.push('only ' + fmtNum(state.troops) + ' troops available');
+  if(sending > state.troops) problems.push('only ' + fmtNum(state.troops) + ' reserve troops available');
   if(shortSupplies > 0) problems.push(fmtNum(shortSupplies) + ' more supplies needed');
+  
   if(problems.length){ msg.textContent = 'Cannot march: ' + problems.join(', ') + '.'; btn.disabled = true; }
   else { msg.textContent = ''; btn.disabled = false; }
 }
@@ -489,13 +703,13 @@ function dispatchMarch(){
 
   state.troops -= sending;
   state.supplies -= SIEGE_SUPPLY_COST;
-  const dist = Math.max(1, graphDist[p.id]);
-  const arriveTime = Date.now() + dist*PER_HOP_MARCH_MS;
-  state.marches.push({ toId:p.id, toName:p.name, troops:sending, arriveTime });
-  addLog('An army of ' + sending + ' set out for ' + p.name + '.');
+
+  const arriveTime = Date.now() + PER_HOP_MARCH_MS;
+  state.marches.push({ toId:p.id, toName:p.name, troops:sending, arriveTime, owner:'player' });
+  addLog(`⚔️ Dispatched attack force of ${sending} troops to ${p.name}.`);
 
   selectedId = null;
-  document.getElementById('siegePanel').style.display = 'none';
+  document.getElementById('actionPanel').style.display = 'none';
   save();
   renderAll();
 }
@@ -506,11 +720,13 @@ function renderMarches(){
   if(!state.marches.length){ box.style.display = 'none'; return; }
   box.style.display = 'block';
   list.innerHTML = '';
+  
   state.marches.slice().sort((a,b)=>a.arriveTime-b.arriveTime).forEach(m=>{
     const row = document.createElement('div');
-    row.className = 'march-row';
+    row.className = 'march-row' + (m.owner==='enemy' ? ' ai-march' : '');
     const remain = Math.max(0, m.arriveTime - Date.now());
-    row.innerHTML = '<span>' + m.troops + ' troops &rarr; ' + m.toName + '</span><span class="march-eta">' + fmtDuration(remain) + '</span>';
+    const icon = m.owner==='enemy' ? '🚨 Enemy' : '⚔️ Player';
+    row.innerHTML = `<span>${icon}: ${m.troops} troops &rarr; ${m.toName}</span><span class="march-eta">${fmtDuration(remain)}</span>`;
     list.appendChild(row);
   });
 }
@@ -524,7 +740,7 @@ function renderLog(){
 }
 
 function newCampaign(){
-  if(!confirm('Start a new campaign? Your map progress and marching armies will be lost (total hours studied stay on record).')) return;
+  if(!confirm('Start a new campaign? Your map progress and marching armies will be reset.')) return;
   const totalMinutes = state.totalMinutes;
   state = freshState();
   state.totalMinutes = totalMinutes;
@@ -569,7 +785,7 @@ function renderAll(){
   renderStats();
   renderRoads();
   renderMap();
-  renderSiegePanel();
+  renderActionPanel();
   renderMarches();
   renderLog();
   if(state.sessionStart){
@@ -585,16 +801,16 @@ load();
 renderAll();
 
 setInterval(()=>{
-  applyGrowth();
   applyPassive();
+  applyAI();
   resolveMarches();
   save();
   renderStats();
   renderMap();
-  renderSiegePanel();
+  renderActionPanel();
   renderMarches();
   renderLog();
-}, 15000);
+}, 10000);
 </script>
 </body>
 </html>
