@@ -103,23 +103,30 @@
   .node.selected{outline:3px solid var(--wine); outline-offset:3px;}
   .node .type-icon{font-size:14px; line-height:1;}
   
-  .node-label{
-    position:absolute; transform:translate(-50%,0); top:100%; margin-top:2px;
-    font-family:'Cinzel', serif; font-size:9.5px; font-weight:700; text-align:center; width:90px;
-    color:var(--ink); pointer-events:none; text-shadow:0 1px 2px rgba(255,255,255,0.8);
-    z-index:3;
-  }
+  /* Badge & Label Anchoring */
   .node-def{
-    position:absolute; top:-14px; left:50%; transform:translateX(-50%);
+    position:absolute; 
+    transform:translate(-50%, -100%);
     font-size:9px; font-weight:700; color:var(--wine-dark); pointer-events:none;
     background:var(--parchment); padding:1px 4px; border-radius:3px; border:1px solid var(--parchment-darker);
-    white-space:nowrap; z-index:3;
+    white-space:nowrap; z-index:3; 
+    margin-top:-26px;
   }
   .node-yield{
-    position:absolute; bottom:-16px; left:50%; transform:translateX(-50%);
+    position:absolute; 
+    transform:translate(-50%, 0);
     font-size:8px; font-weight:600; color:var(--ink-soft); pointer-events:none;
-    background:rgba(233, 220, 184, 0.9); padding:0px 3px; border-radius:3px; white-space:nowrap;
-    z-index:3;
+    background:rgba(233, 220, 184, 0.95); padding:1px 4px; border-radius:3px; border:1px solid var(--parchment-darker); 
+    white-space:nowrap; z-index:3; 
+    margin-top:26px;
+  }
+  .node-label{
+    position:absolute; 
+    transform:translate(-50%, 0); 
+    font-family:'Cinzel', serif; font-size:9.5px; font-weight:700; text-align:center; width:90px;
+    color:var(--ink); pointer-events:none; text-shadow:0 1px 2px rgba(255,255,255,0.8);
+    z-index:3; 
+    margin-top:42px;
   }
 
   .action-panel{margin-top:14px; padding-top:12px; border-top:1px dashed var(--parchment-darker);}
@@ -406,7 +413,7 @@ function applyPassive(){
 function applyAI(){
   const now = Date.now();
   const elapsedMinutes = (now - state.lastAITick) / 60000;
-  if(elapsedMinutes < 0.5) return; // AI acts roughly every 30s
+  if(elapsedMinutes < 0.5) return;
   state.lastAITick = now;
 
   const enemyProvinces = state.provinces.filter(p => p.owner === 'enemy');
@@ -415,27 +422,25 @@ function applyAI(){
   // 1. Enemy Passive Troop Reinforcement & Upgrades
   enemyProvinces.forEach(p => {
     const ind = getIndYield(p);
-    p.defense += (ind * (elapsedMinutes / 60)); // AI generates defense troops
+    p.defense += (ind * (elapsedMinutes / 60));
     
-    // AI Auto-upgrades its forts if defense is high
     if(p.defense > 50 && Math.random() < 0.3){
       p.fortLvl += 1;
       p.defense += 15;
     }
   });
 
-  // 2. AI Aggression Logic: AI looks for player neighbors to attack
+  // 2. AI Aggression Logic
   enemyProvinces.forEach(aiProv => {
-    if(aiProv.defense < 35) return; // Need minimum army strength to launch assault
+    if(aiProv.defense < 35) return;
 
     const nbrs = adjacency[aiProv.id];
     const playerTarget = nbrs.map(id => state.provinces[id]).find(p => p.owner === 'player');
 
     if(playerTarget){
-      // Check if AI army significantly outweighs player garrison
       if(aiProv.defense > playerTarget.defense * 1.25){
         const attackForce = Math.floor(aiProv.defense * 0.65);
-        aiProv.defense -= attackForce; // Deduct force from garrison
+        aiProv.defense -= attackForce;
 
         const arriveTime = Date.now() + PER_HOP_MARCH_MS;
         state.marches.push({
@@ -465,14 +470,13 @@ function resolveMarches(){
         if(p.owner === 'enemy'){
           if(m.troops >= Math.round(p.defense)){
             p.owner = 'player';
-            p.defense = Math.round(m.troops - p.defense * 0.5); // Remaining troops occupy node
+            p.defense = Math.round(m.troops - p.defense * 0.5);
             addLog(`⚔️ Conquest! Your forces captured ${p.name} (${m.troops} vs ${Math.round(p.defense)} defense).`);
           } else {
-            p.defense -= Math.round(m.troops * 0.6); // Inflict casualties
+            p.defense -= Math.round(m.troops * 0.6);
             addLog(`💥 Assault failed on ${p.name}. Your attack army was repelled (${m.troops} vs ${Math.round(p.defense)} defense).`);
           }
         } else {
-          // Reinforcing player node
           p.defense += m.troops;
           addLog(`🛡️ Reinforcements arrived at ${p.name} (+${m.troops} troops).`);
         }
@@ -556,7 +560,7 @@ function renderMap(){
     node.onclick = () => selectProvince(p.id);
     container.appendChild(node);
 
-    // Garrison Badge
+    // Garrison & Yield Badges
     if(revealed){
       const defBadge = document.createElement('div');
       defBadge.className = 'node-def';
@@ -670,7 +674,7 @@ function upgradeProvince(type){
     if(state.supplies < cost) return alert("Not enough supplies!");
     state.supplies -= cost;
     p.fortLvl += 1;
-    p.defense += 20; // Adds 20 garrison defense troops directly
+    p.defense += 20;
     addLog(`🏰 Fortified ${p.name}. Garrison defenses increased!`);
   }
 
