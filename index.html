@@ -3,35 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Ink &amp; Iron</title>
+<title>Ink &amp; Iron - Dark Edition</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cinzel+Decorative:wght@700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
-    --parchment:#e9dcb8;
-    --parchment-dark:#d7c497;
-    --parchment-darker:#c4af7f;
-    --ink:#2a2116;
-    --ink-soft:#4a3b28;
-    --wine:#7c2a2e;
-    --wine-dark:#5c1f22;
-    --gold:#a87b2d;
-    --gold-light:#c99a44;
-    --forest:#3f5330;
-    --forest-light:#5c7a48;
-    --stone:#8c8676;
-    --stone-dark:#5f5a4d;
-    --road:#8a7752;
+    --bg-dark:#0d0e12;
+    --panel-bg:#161820;
+    --panel-border:#2a2d3c;
+    --parchment:#1c1f2b;
+    --parchment-dark:#12141c;
+    --parchment-darker:#242838;
+    --ink:#e6dfd3;
+    --ink-soft:#a49e93;
+    --wine:#94292d;
+    --wine-dark:#b53338;
+    --gold:#d4af37;
+    --gold-light:#e2c054;
+    --forest:#2b5e3f;
+    --forest-light:#3e855b;
+    --stone:#353847;
+    --stone-dark:#20222b;
+    --road:#615849;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
+  html,body{margin:0;padding:0;background:var(--bg-dark);color:var(--ink);}
   body{
-    background:
-      radial-gradient(ellipse at top left, rgba(255,255,255,0.06), transparent 60%),
-      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.08), transparent 60%),
-      var(--parchment);
-    color:var(--ink);
     font-family:'EB Garamond', serif;
     min-height:100vh;
     display:flex;
@@ -44,64 +42,86 @@
   .title-block h1{
     font-family:'Cinzel Decorative', serif;
     font-size:36px;
-    color:var(--wine-dark);
-    text-shadow: 1px 1px 0 rgba(255,255,255,0.25);
+    color:var(--gold);
+    text-shadow: 0 0 10px rgba(212,175,55,0.2), 1px 1px 0 rgba(0,0,0,0.8);
   }
   .title-block p{margin:2px 0 0; font-size:14px; font-style:italic; color:var(--ink-soft);}
-  .divider{height:2px; margin:14px 0 16px; background:repeating-linear-gradient(90deg, var(--gold) 0 8px, transparent 8px 14px); opacity:0.7;}
+  .divider{height:2px; margin:14px 0 16px; background:repeating-linear-gradient(90deg, var(--gold) 0 8px, transparent 8px 14px); opacity:0.5;}
 
   .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:8px;}
-  .stat-card{background:var(--parchment-dark); border:1px solid var(--parchment-darker); border-radius:6px; padding:10px 6px; text-align:center;}
-  .stat-card svg{width:20px;height:20px;display:block;margin:0 auto 4px;}
-  .stat-card .num{font-family:'Cinzel', serif; font-weight:700; font-size:19px; color:var(--wine-dark);}
+  .stat-card{background:var(--panel-bg); border:1px solid var(--panel-border); border-radius:6px; padding:10px 6px; text-align:center;}
+  .stat-card svg{width:20px;height:20px;display:block;margin:0 auto 4px; stroke:var(--gold);}
+  .stat-card .num{font-family:'Cinzel', serif; font-weight:700; font-size:19px; color:var(--gold-light);}
   .stat-card .lbl{font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft);}
   .passive-line{text-align:center; font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:16px;}
 
-  .panel{background:var(--parchment-dark); border:1px solid var(--parchment-darker); border-radius:8px; padding:14px; margin-bottom:16px;}
-  .panel h2{font-size:16px; color:var(--wine-dark); display:flex; align-items:center; gap:8px;}
-  .panel h2 svg{width:18px;height:18px;}
+  .panel{background:var(--panel-bg); border:1px solid var(--panel-border); border-radius:8px; padding:14px; margin-bottom:16px; box-shadow:0 4px 12px rgba(0,0,0,0.4);}
+  .panel h2{font-size:16px; color:var(--gold); display:flex; align-items:center; gap:8px;}
+  .panel h2 svg{width:18px;height:18px; stroke:var(--gold);}
   .panel p.sub{font-size:13px; color:var(--ink-soft); margin:4px 0 12px;}
+
+  /* Leaderboard Styling */
+  .leaderboard-list{display:flex; flex-direction:column; gap:6px; margin-top:8px;}
+  .lb-item{
+    display:flex; justify-content:space-between; align-items:center;
+    background:var(--parchment); border:1px solid var(--panel-border); padding:8px 12px; border-radius:6px; font-size:13px;
+  }
+  .lb-item.player-empire{border-color:var(--gold); background:rgba(212,175,55,0.08);}
+  .lb-rank{font-family:'Cinzel', serif; font-weight:700; width:24px; color:var(--gold-light);}
+  .lb-name{flex-grow:1; font-weight:600; color:var(--ink);}
+  .lb-count{font-family:'Cinzel', serif; font-weight:700; color:var(--gold);}
 
   /* Study Presets UI */
   .preset-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:12px;}
   .preset-btn{
-    background:var(--parchment); color:var(--ink); border:1px solid var(--parchment-darker);
+    background:var(--parchment); color:var(--ink); border:1px solid var(--panel-border);
     padding:8px 4px; border-radius:6px; text-align:center; cursor:pointer; font-size:11px;
     box-shadow:none; transition:all 0.15s ease;
   }
-  .preset-btn:hover{background:var(--parchment-darker);}
+  .preset-btn:hover{background:var(--parchment-darker); border-color:var(--gold);}
   .preset-btn.active{background:var(--wine); color:#f2e9d0; border-color:var(--wine-dark); font-weight:bold;}
-  .preset-btn .time{font-family:'Cinzel', serif; font-size:13px; font-weight:700; display:block;}
+  .preset-btn .time{font-family:'Cinzel', serif; font-size:13px; font-weight:700; display:block; color:var(--gold-light);}
+  .preset-btn.active .time{color:#fff;}
 
   .timer-row{display:flex; align-items:center; gap:12px;}
-  .timer-display{font-family:'Cinzel', serif; font-size:26px; font-weight:700; color:var(--ink); min-width:110px;}
+  .timer-display{font-family:'Cinzel', serif; font-size:26px; font-weight:700; color:var(--gold); min-width:110px;}
   button{font-family:'Cinzel', serif; font-size:12px; letter-spacing:0.03em; border:none; border-radius:6px; padding:8px 14px; cursor:pointer; color:#f2e9d0; background:var(--wine); box-shadow:0 2px 0 var(--wine-dark); transition:transform 0.05s ease;}
+  button:hover{filter:brightness(1.1);}
   button:active{transform:translateY(2px); box-shadow:0 0 0 var(--wine-dark);}
-  button.secondary{background:var(--forest); box-shadow:0 2px 0 #29371e;}
-  button.secondary:active{box-shadow:0 0 0 #29371e;}
+  button.secondary{background:var(--forest); box-shadow:0 2px 0 #1b3d29;}
+  button.secondary:active{box-shadow:0 0 0 #1b3d29;}
   button:disabled{background:var(--stone); box-shadow:0 2px 0 var(--stone-dark); cursor:not-allowed; opacity:0.7;}
 
-  /* Drag-to-Pan Map Viewport (No scrollbars) */
+  /* Map Container & Controls */
+  .map-wrapper{position:relative; width:100%;}
+  .map-controls{
+    position:absolute; top:12px; right:12px; z-index:10; display:flex; flex-direction:column; gap:6px;
+  }
+  .zoom-btn{
+    width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center;
+    font-size:16px; font-weight:bold; background:var(--panel-bg); color:var(--gold);
+    border:1px solid var(--panel-border); border-radius:4px; box-shadow:0 2px 6px rgba(0,0,0,0.5);
+  }
+
   .map-viewport{
     position:relative;
     width:100%;
     height:600px;
     overflow:hidden;
     background:var(--parchment-dark);
-    border:2px solid var(--parchment-darker);
+    border:2px solid var(--panel-border);
     border-radius:8px;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.08);
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
     cursor:grab;
     user-select:none;
   }
-  .map-viewport:active{
-    cursor:grabbing;
-  }
+  .map-viewport:active{cursor:grabbing;}
   .map-container{
     position:relative;
     width:1800px;
     height:1400px;
     background:var(--parchment-dark);
+    transform-origin: 0 0;
   }
   .map-container svg{position:absolute; inset:0; width:100%; height:100%; pointer-events:none;}
   
@@ -114,22 +134,22 @@
     cursor:pointer;
     background:var(--stone);
     border:2px dashed var(--ink-soft);
-    box-shadow:0 2px 5px rgba(0,0,0,0.2);
+    box-shadow:0 3px 8px rgba(0,0,0,0.6);
     transition: transform 0.15s ease, outline 0.1s ease;
     z-index: 2;
   }
   .node:hover{transform:translate(-50%,-50%) scale(1.15); z-index:5;}
   .node.owned{background:var(--forest); border-color:var(--gold); border-style:solid;}
-  .node.attackable{background:var(--gold-light); border-color:var(--wine-dark); border-style:solid;}
-  .node.fog{background:var(--stone-dark); opacity:0.65;}
-  .node.selected{outline:3px solid var(--wine); outline-offset:3px;}
+  .node.attackable{background:#7a591e; border-color:var(--gold-light); border-style:solid;}
+  .node.fog{background:var(--stone-dark); opacity:0.6;}
+  .node.selected{outline:3px solid var(--gold); outline-offset:3px;}
   .node .type-icon{font-size:13px; line-height:1;}
   
   .node-def{
     position:absolute; 
     transform:translate(-50%, -100%);
-    font-size:9px; font-weight:700; color:var(--wine-dark); pointer-events:none;
-    background:var(--parchment); padding:1px 4px; border-radius:3px; border:1px solid var(--parchment-darker);
+    font-size:9px; font-weight:700; color:var(--gold-light); pointer-events:none;
+    background:var(--panel-bg); padding:1px 4px; border-radius:3px; border:1px solid var(--panel-border);
     white-space:nowrap; z-index:3; 
     margin-top:-24px;
   }
@@ -137,7 +157,7 @@
     position:absolute; 
     transform:translate(-50%, 0);
     font-size:8px; font-weight:600; color:var(--ink-soft); pointer-events:none;
-    background:rgba(233, 220, 184, 0.95); padding:1px 4px; border-radius:3px; border:1px solid var(--parchment-darker); 
+    background:rgba(22, 24, 32, 0.95); padding:1px 4px; border-radius:3px; border:1px solid var(--panel-border); 
     white-space:nowrap; z-index:3; 
     margin-top:24px;
   }
@@ -145,15 +165,15 @@
     position:absolute; 
     transform:translate(-50%, 0); 
     font-family:'Cinzel', serif; font-size:9px; font-weight:700; text-align:center; width:95px;
-    color:var(--ink); pointer-events:none; text-shadow:0 1px 2px rgba(255,255,255,0.8);
+    color:var(--ink); pointer-events:none; text-shadow:0 1px 3px rgba(0,0,0,0.9);
     z-index:3; 
     margin-top:40px;
   }
 
-  .action-panel{margin-top:14px; padding-top:12px; border-top:1px dashed var(--parchment-darker);}
+  .action-panel{margin-top:14px; padding-top:12px; border-top:1px dashed var(--panel-border);}
   .action-grid{display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px;}
-  .upg-card{background:var(--parchment); border:1px solid var(--parchment-darker); padding:8px; border-radius:6px; text-align:center;}
-  .upg-card h4{font-size:11px; margin-bottom:4px; color:var(--wine-dark);}
+  .upg-card{background:var(--parchment); border:1px solid var(--panel-border); padding:8px; border-radius:6px; text-align:center;}
+  .upg-card h4{font-size:11px; margin-bottom:4px; color:var(--gold);}
   .upg-card p{font-size:10px; margin:2px 0 6px; color:var(--ink-soft);}
 
   .siege-row{display:flex; justify-content:space-between; font-size:13px; margin:4px 0;}
@@ -161,18 +181,18 @@
   .send-row{display:flex; align-items:center; gap:8px; margin-top:10px;}
   .send-row input[type=number]{
     width:80px; font-family:'Cinzel', serif; font-size:14px; padding:6px 8px;
-    border:1px solid var(--parchment-darker); border-radius:5px; background:#fbf6e8;
+    border:1px solid var(--panel-border); border-radius:5px; background:var(--parchment-dark); color:var(--ink);
   }
   .need-more{font-size:12px; color:var(--wine-dark); margin-top:6px;}
 
   .marches{margin-top:12px;}
-  .march-row{display:flex; justify-content:space-between; align-items:center; font-size:12px; padding:6px 0; border-bottom:1px solid var(--parchment-darker);}
+  .march-row{display:flex; justify-content:space-between; align-items:center; font-size:12px; padding:6px 0; border-bottom:1px solid var(--panel-border);}
   .march-row.ai-march{color:var(--wine-dark); font-weight:600;}
   .march-row:last-child{border-bottom:none;}
-  .march-eta{font-family:'Cinzel', serif; font-weight:700; color:var(--wine-dark);}
+  .march-eta{font-family:'Cinzel', serif; font-weight:700; color:var(--gold);}
 
   .log{max-height:120px; overflow-y:auto; font-size:11.5px; color:var(--ink-soft);}
-  .log div{padding:3px 0; border-bottom:1px dashed var(--parchment-darker);}
+  .log div{padding:3px 0; border-bottom:1px dashed var(--panel-border);}
   .log div:last-child{border-bottom:none;}
 
   .legend{display:flex; gap:12px; flex-wrap:wrap; font-size:11px; color:var(--ink-soft); margin-top:10px; justify-content:center;}
@@ -217,6 +237,16 @@
   </div>
   <div class="passive-line" id="passiveLine"></div>
 
+  <!-- Realm Empire Leaderboard Panel -->
+  <div class="panel">
+    <h2>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Empire Leaderboard
+    </h2>
+    <p class="sub">Realm standings based on current territory ownership across the 168 locations.</p>
+    <div class="leaderboard-list" id="leaderboardList"></div>
+  </div>
+
   <div class="panel">
     <h2>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2c-1 2-4 3-4 6 0 2 1.5 3 1.5 5C9.5 15 8 15.5 8 18a4 4 0 008 0c0-2.5-1.5-3-1.5-5 0-2 1.5-3 1.5-5 0-3-3-4-4-6z"/></svg>
@@ -257,22 +287,31 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/></svg>
       The realm map (168 Locations)
     </h2>
-    <p class="sub">Click and drag to move around the map. Click on provinces to attack or upgrade.</p>
-    <div class="map-viewport" id="mapViewport">
-      <div class="map-container" id="mapContainer">
-        <svg id="roadsSvg"></svg>
+    <p class="sub">Drag to pan, use mouse wheel or buttons to zoom in/out.</p>
+    
+    <div class="map-wrapper">
+      <div class="map-controls">
+        <button class="zoom-btn" onclick="adjustZoom(0.15)" title="Zoom In">+</button>
+        <button class="zoom-btn" onclick="adjustZoom(-0.15)" title="Zoom Out">&minus;</button>
+        <button class="zoom-btn" onclick="resetZoom()" title="Reset Zoom" style="font-size:11px;">1x</button>
+      </div>
+      <div class="map-viewport" id="mapViewport">
+        <div class="map-container" id="mapContainer">
+          <svg id="roadsSvg"></svg>
+        </div>
       </div>
     </div>
+
     <div class="legend">
       <span><span class="swatch" style="background:var(--forest)"></span>Your Land</span>
-      <span><span class="swatch" style="background:var(--gold-light)"></span>Can Attack</span>
+      <span><span class="swatch" style="background:#7a591e"></span>Can Attack</span>
       <span><span class="swatch" style="background:var(--stone)"></span>Enemy Territory</span>
       <span><span class="swatch" style="background:var(--stone-dark)"></span>Unscouted</span>
     </div>
 
     <!-- Upgrade / Attack Action Panel -->
     <div class="action-panel" id="actionPanel" style="display:none;">
-      <h3 id="panelTitle" style="font-size:15px; color:var(--wine-dark);"></h3>
+      <h3 id="panelTitle" style="font-size:15px; color:var(--gold);"></h3>
       <p id="panelSub" style="font-size:12px; color:var(--ink-soft); margin:2px 0 8px;"></p>
       
       <div id="playerUpgSection" style="display:none;">
@@ -309,12 +348,12 @@
     </div>
 
     <div class="marches" id="marchesBox" style="display:none;">
-      <h3 style="font-size:13px; color:var(--wine-dark); margin-bottom:4px;">Armies Marching</h3>
+      <h3 style="font-size:13px; color:var(--gold); margin-bottom:4px;">Armies Marching</h3>
       <div id="marchesList"></div>
     </div>
 
     <div class="marches" id="logBox" style="display:none;">
-      <h3 style="font-size:13px; color:var(--wine-dark); margin-bottom:4px;">Chronicle</h3>
+      <h3 style="font-size:13px; color:var(--gold); margin-bottom:4px;">Chronicle</h3>
       <div class="log" id="logList"></div>
     </div>
   </div>
@@ -326,7 +365,15 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'inkIronState_v5';
+const STORAGE_KEY = 'inkIronState_v6';
+
+const AI_EMPIRES = [
+  { id: 'emp_iron', name: 'Iron Covenant', color: '#6d7582' },
+  { id: 'emp_shadow', name: 'Shadow Syndicate', color: '#54416d' },
+  { id: 'emp_frost', name: 'Frostwatch Dominion', color: '#3d6878' },
+  { id: 'emp_ashen', name: 'Ashen Order', color: '#804538' },
+  { id: 'emp_blood', name: 'Bloodfang Clan', color: '#7a292d' }
+];
 
 const STUDY_PRESETS = {
   10: { mins: 10, troops: 1, supplies: 5 },
@@ -402,6 +449,7 @@ let selectedId = null;
 let timerInterval = null;
 let isDraggingMap = false;
 let dragMoved = false;
+let currentZoom = 1.0;
 
 function buildGraph(){
   if(!state || !state.mapData) return;
@@ -424,11 +472,15 @@ function freshState(){
     const typeKey = typeKeys[(i * 3 + 1) % typeKeys.length];
     const isPlayer = (i === startIdx);
     
+    // Assign AI Empire owners evenly to non-player nodes
+    const empIdx = i % AI_EMPIRES.length;
+    const ownerId = isPlayer ? 'player' : AI_EMPIRES[empIdx].id;
+
     provinces.push({
       id: i,
       name: mapData.nodes[i].name,
       type: typeKey,
-      owner: isPlayer ? 'player' : 'enemy',
+      owner: ownerId,
       defense: isPlayer ? 20 : 15 + Math.floor(Math.random() * 25),
       econLvl: 1,
       indLvl: 1,
@@ -497,7 +549,7 @@ function applyAI(){
   if(elapsedMinutes < 0.5) return;
   state.lastAITick = now;
 
-  const enemyProvinces = state.provinces.filter(p => p.owner === 'enemy');
+  const enemyProvinces = state.provinces.filter(p => p.owner !== 'player');
   if(!enemyProvinces.length) return;
 
   enemyProvinces.forEach(p => {
@@ -529,10 +581,10 @@ function applyAI(){
           toName: playerTarget.name,
           troops: attackForce,
           arriveTime,
-          owner: 'enemy'
+          owner: aiProv.owner
         });
 
-        addLog(`⚠️ Enemy march detected! ${attackForce} troops dispatched from ${aiProv.name} toward ${playerTarget.name}!`);
+        addLog(`⚠️ Hostile march detected! ${attackForce} troops dispatched from ${aiProv.name} toward ${playerTarget.name}!`);
       }
     }
   });
@@ -546,7 +598,7 @@ function resolveMarches(){
     if(m.arriveTime <= now){
       const p = state.provinces[m.toId];
       if(m.owner === 'player'){
-        if(p.owner === 'enemy'){
+        if(p.owner !== 'player'){
           if(m.troops >= Math.round(p.defense)){
             p.owner = 'player';
             p.defense = Math.round(m.troops - p.defense * 0.5);
@@ -559,10 +611,10 @@ function resolveMarches(){
           p.defense += m.troops;
           addLog(`🛡️ Reinforcements arrived at ${p.name} (+${m.troops} troops).`);
         }
-      } else if(m.owner === 'enemy'){
+      } else {
         if(p.owner === 'player'){
           if(m.troops >= Math.round(p.defense)){
-            p.owner = 'enemy';
+            p.owner = m.owner;
             p.defense = Math.round(m.troops - p.defense * 0.5);
             addLog(`🚨 Lost territory! Enemy forces conquered ${p.name}!`);
           } else {
@@ -584,7 +636,7 @@ function addLog(text){
 }
 
 function isAttackable(p){
-  if(p.owner !== 'enemy') return false;
+  if(p.owner === 'player') return false;
   const nbrs = adjacency[p.id] || [];
   return nbrs.some(n => state.provinces[n] && state.provinces[n].owner === 'player');
 }
@@ -592,7 +644,6 @@ function isRevealed(p){ if(p.owner==='player') return true; return isAttackable(
 function fmtNum(n){ return Math.round(n).toLocaleString(); }
 function pad(n){ return n.toString().padStart(2,'0'); }
 
-// Updated to display Minutes AND Seconds precisely
 function fmtDuration(ms){
   const totalSec = Math.max(0, Math.floor(ms / 1000));
   const h = Math.floor(totalSec / 3600);
@@ -600,6 +651,44 @@ function fmtDuration(ms){
   const s = totalSec % 60;
   if(h > 0) return `${h}h ${pad(m)}m ${pad(s)}s`;
   return `${m}m ${pad(s)}s`;
+}
+
+function renderLeaderboard(){
+  const container = document.getElementById('leaderboardList');
+  if(!container) return;
+
+  const counts = {};
+  counts['player'] = 0;
+  AI_EMPIRES.forEach(e => counts[e.id] = 0);
+
+  state.provinces.forEach(p => {
+    if(counts[p.owner] !== undefined) counts[p.owner]++;
+    else counts[p.owner] = 1;
+  });
+
+  const list = [
+    { id: 'player', name: 'Your Sovereign Realm', count: counts['player'], isPlayer: true }
+  ];
+
+  AI_EMPIRES.forEach(e => {
+    list.push({ id: e.id, name: e.name, count: counts[e.id] || 0, isPlayer: false });
+  });
+
+  list.sort((a,b) => b.count - a.count);
+
+  let html = '';
+  list.forEach((item, index) => {
+    const pct = ((item.count / state.provinces.length) * 100).toFixed(1);
+    html += `
+      <div class="lb-item ${item.isPlayer ? 'player-empire' : ''}">
+        <span class="lb-rank">#${index + 1}</span>
+        <span class="lb-name">${item.name} ${item.isPlayer ? '👑' : ''}</span>
+        <span class="lb-count">${item.count} locs (${pct}%)</span>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
 }
 
 function renderStats(){
@@ -619,7 +708,7 @@ function renderRoads(){
   state.mapData.edges.forEach(([a, b]) => {
     const pa = state.mapData.nodes[a], pb = state.mapData.nodes[b];
     if(pa && pb){
-      lines += `<line x1="${pa.x}px" y1="${pa.y}px" x2="${pb.x}px" y2="${pb.y}px" stroke="#8a7752" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.65" />`;
+      lines += `<line x1="${pa.x}px" y1="${pa.y}px" x2="${pb.x}px" y2="${pb.y}px" stroke="#615849" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.65" />`;
     }
   });
   svg.innerHTML = lines;
@@ -681,13 +770,30 @@ function renderMap(){
     : '';
 }
 
+function applyMapZoom(){
+  const container = document.getElementById('mapContainer');
+  if(container){
+    container.style.transform = `scale(${currentZoom})`;
+  }
+}
+
+function adjustZoom(delta){
+  currentZoom = Math.min(Math.max(0.5, currentZoom + delta), 2.0);
+  applyMapZoom();
+}
+
+function resetZoom(){
+  currentZoom = 1.0;
+  applyMapZoom();
+}
+
 function scrollToNode(id){
   const el = document.getElementById(`node-${id}`);
   const viewport = document.getElementById('mapViewport');
   if(el && viewport && state.mapData.nodes[id]){
     const nodeData = state.mapData.nodes[id];
-    viewport.scrollLeft = nodeData.x - viewport.clientWidth / 2;
-    viewport.scrollTop = nodeData.y - viewport.clientHeight / 2;
+    viewport.scrollLeft = (nodeData.x * currentZoom) - (viewport.clientWidth / 2);
+    viewport.scrollTop = (nodeData.y * currentZoom) - (viewport.clientHeight / 2);
   }
 }
 
@@ -828,9 +934,9 @@ function renderMarches(){
   
   state.marches.slice().sort((a,b)=>a.arriveTime-b.arriveTime).forEach(m=>{
     const row = document.createElement('div');
-    row.className = 'march-row' + (m.owner==='enemy' ? ' ai-march' : '');
+    row.className = 'march-row' + (m.owner!=='player' ? ' ai-march' : '');
     const remain = Math.max(0, m.arriveTime - Date.now());
-    const icon = m.owner==='enemy' ? '🚨 Enemy' : '⚔️ Player';
+    const icon = m.owner!=='player' ? '🚨 Enemy' : '⚔️ Player';
     row.innerHTML = `<span>${icon}: ${m.troops} troops &rarr; ${m.toName}</span><span class="march-eta">${fmtDuration(remain)}</span>`;
     list.appendChild(row);
   });
@@ -939,8 +1045,8 @@ function newCampaign(){
   setTimeout(() => scrollToNode(state.startIdx), 100);
 }
 
-// Drag to Pan Implementation for Map Viewport
-function setupMapPan(){
+// Drag-to-Pan & Mouse Wheel Zoom Implementation
+function setupMapPanAndZoom(){
   const viewport = document.getElementById('mapViewport');
   let startX, startY, scrollLeft, scrollTop;
 
@@ -953,13 +1059,8 @@ function setupMapPan(){
     scrollTop = viewport.scrollTop;
   });
 
-  viewport.addEventListener('mouseleave', () => {
-    isDraggingMap = false;
-  });
-
-  viewport.addEventListener('mouseup', () => {
-    isDraggingMap = false;
-  });
+  viewport.addEventListener('mouseleave', () => { isDraggingMap = false; });
+  viewport.addEventListener('mouseup', () => { isDraggingMap = false; });
 
   viewport.addEventListener('mousemove', (e) => {
     if(!isDraggingMap) return;
@@ -975,12 +1076,20 @@ function setupMapPan(){
     viewport.scrollLeft = scrollLeft - walkX;
     viewport.scrollTop = scrollTop - walkY;
   });
+
+  viewport.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY < 0 ? 0.1 : -0.1;
+    adjustZoom(delta);
+  }, { passive: false });
 }
 
 function renderAll(){
+  renderLeaderboard();
   renderStats();
   renderRoads();
   renderMap();
+  applyMapZoom();
   renderActionPanel();
   renderMarches();
   renderLog();
@@ -994,7 +1103,7 @@ function renderAll(){
 }
 
 load();
-setupMapPan();
+setupMapPanAndZoom();
 renderAll();
 setTimeout(() => scrollToNode(state.startIdx), 200);
 
@@ -1007,6 +1116,7 @@ setInterval(()=>{
   applyAI();
   resolveMarches();
   save();
+  renderLeaderboard();
   renderStats();
   renderMap();
   renderActionPanel();
