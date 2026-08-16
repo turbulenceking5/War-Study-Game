@@ -62,24 +62,40 @@
   .panel h2 svg{width:18px;height:18px;}
   .panel p.sub{font-size:13px; color:var(--ink-soft); margin:4px 0 12px;}
 
+  /* Study Presets UI */
+  .preset-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:12px;}
+  .preset-btn{
+    background:var(--parchment); color:var(--ink); border:1px solid var(--parchment-darker);
+    padding:8px 4px; border-radius:6px; text-align:center; cursor:pointer; font-size:11px;
+    box-shadow:none; transition:all 0.15s ease;
+  }
+  .preset-btn:hover{background:var(--parchment-darker);}
+  .preset-btn.active{background:var(--wine); color:#f2e9d0; border-color:var(--wine-dark); font-weight:bold;}
+  .preset-btn .time{font-family:'Cinzel', serif; font-size:13px; font-weight:700; display:block;}
+
   .timer-row{display:flex; align-items:center; gap:12px;}
-  .timer-display{font-family:'Cinzel', serif; font-size:26px; font-weight:700; color:var(--ink); min-width:92px;}
+  .timer-display{font-family:'Cinzel', serif; font-size:26px; font-weight:700; color:var(--ink); min-width:110px;}
   button{font-family:'Cinzel', serif; font-size:12px; letter-spacing:0.03em; border:none; border-radius:6px; padding:8px 14px; cursor:pointer; color:#f2e9d0; background:var(--wine); box-shadow:0 2px 0 var(--wine-dark); transition:transform 0.05s ease;}
   button:active{transform:translateY(2px); box-shadow:0 0 0 var(--wine-dark);}
   button.secondary{background:var(--forest); box-shadow:0 2px 0 #29371e;}
   button.secondary:active{box-shadow:0 0 0 #29371e;}
   button:disabled{background:var(--stone); box-shadow:0 2px 0 var(--stone-dark); cursor:not-allowed; opacity:0.7;}
 
-  /* Scrollable Expanded Map Viewport */
+  /* Drag-to-Pan Map Viewport (No scrollbars) */
   .map-viewport{
     position:relative;
     width:100%;
     height:600px;
-    overflow:auto;
+    overflow:hidden;
     background:var(--parchment-dark);
     border:2px solid var(--parchment-darker);
     border-radius:8px;
     box-shadow: inset 0 0 20px rgba(0,0,0,0.08);
+    cursor:grab;
+    user-select:none;
+  }
+  .map-viewport:active{
+    cursor:grabbing;
   }
   .map-container{
     position:relative;
@@ -109,7 +125,6 @@
   .node.selected{outline:3px solid var(--wine); outline-offset:3px;}
   .node .type-icon{font-size:13px; line-height:1;}
   
-  /* Badge & Label Positioning */
   .node-def{
     position:absolute; 
     transform:translate(-50%, -100%);
@@ -207,11 +222,31 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2c-1 2-4 3-4 6 0 2 1.5 3 1.5 5C9.5 15 8 15.5 8 18a4 4 0 008 0c0-2.5-1.5-3-1.5-5 0-2 1.5-3 1.5-5 0-3-3-4-4-6z"/></svg>
       Study session
     </h2>
-    <p class="sub">Study time produces troops and supplies for your campaign and defenses.</p>
+    <p class="sub">Select a study timer goal to raise troops and supplies upon completion.</p>
+    
+    <div class="preset-grid" id="presetGrid">
+      <div class="preset-btn active" onclick="selectPreset(10)" id="preset-10">
+        <span class="time">10 Min</span>
+        +1 Troop
+      </div>
+      <div class="preset-btn" onclick="selectPreset(15)" id="preset-15">
+        <span class="time">15 Min</span>
+        +3 Troops
+      </div>
+      <div class="preset-btn" onclick="selectPreset(30)" id="preset-30">
+        <span class="time">30 Min</span>
+        +10 Troops
+      </div>
+      <div class="preset-btn" onclick="selectPreset(60)" id="preset-60">
+        <span class="time">60 Min</span>
+        +25 Troops
+      </div>
+    </div>
+
     <div class="timer-row">
-      <div class="timer-display" id="timerDisplay">00:00</div>
+      <div class="timer-display" id="timerDisplay">10:00</div>
       <button id="startBtn" onclick="startSession()">Begin study</button>
-      <button id="stopBtn" class="secondary" onclick="stopSession()" style="display:none;">End session</button>
+      <button id="stopBtn" class="secondary" onclick="stopSession()" style="display:none;">Abandon session</button>
     </div>
   </div>
 
@@ -222,7 +257,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/></svg>
       The realm map (168 Locations)
     </h2>
-    <p class="sub">Scroll through the map viewport to locate provinces, attack enemies, or fortify your territory.</p>
+    <p class="sub">Click and drag to move around the map. Click on provinces to attack or upgrade.</p>
     <div class="map-viewport" id="mapViewport">
       <div class="map-container" id="mapContainer">
         <svg id="roadsSvg"></svg>
@@ -291,7 +326,14 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'inkIronState_v4';
+const STORAGE_KEY = 'inkIronState_v5';
+
+const STUDY_PRESETS = {
+  10: { mins: 10, troops: 1, supplies: 5 },
+  15: { mins: 15, troops: 3, supplies: 8 },
+  30: { mins: 30, troops: 10, supplies: 15 },
+  60: { mins: 60, troops: 25, supplies: 35 }
+};
 
 const PROV_TYPES = {
   fortress: { name: 'Fortress', icon: '🏰', defMult: 1.8, econBase: 2, indBase: 2 },
@@ -314,7 +356,6 @@ function generateUniqueNames(count){
   return Array.from(set);
 }
 
-// Procedurally generate a 168-node connected map (12 cols x 14 rows)
 function generateMapLayout(){
   const cols = 12, rows = 14;
   const total = cols * rows;
@@ -343,26 +384,15 @@ function generateMapLayout(){
   for(let r = 0; r < rows; r++){
     for(let c = 0; c < cols; c++){
       const current = grid[r][c];
-      // Right connection
-      if(c + 1 < cols && Math.random() < 0.85){
-        edges.push([current, grid[r][c+1]]);
-      }
-      // Down connection
-      if(r + 1 < rows && Math.random() < 0.85){
-        edges.push([current, grid[r+1][c]]);
-      }
-      // Diagonal connection
-      if(r + 1 < rows && c + 1 < cols && Math.random() < 0.3){
-        edges.push([current, grid[r+1][c+1]]);
-      }
+      if(c + 1 < cols && Math.random() < 0.85) edges.push([current, grid[r][c+1]]);
+      if(r + 1 < rows && Math.random() < 0.85) edges.push([current, grid[r+1][c]]);
+      if(r + 1 < rows && c + 1 < cols && Math.random() < 0.3) edges.push([current, grid[r+1][c+1]]);
     }
   }
 
   return { nodes, edges };
 }
 
-const TROOPS_PER_MIN = 2;
-const SUPPLIES_PER_MIN = 0.5;
 const SIEGE_SUPPLY_COST = 12;
 const PER_HOP_MARCH_MS = 4 * 60 * 1000;
 
@@ -370,6 +400,8 @@ let adjacency = [];
 let state = null;
 let selectedId = null;
 let timerInterval = null;
+let isDraggingMap = false;
+let dragMoved = false;
 
 function buildGraph(){
   if(!state || !state.mapData) return;
@@ -383,8 +415,6 @@ function buildGraph(){
 function freshState(){
   const mapData = generateMapLayout();
   const numNodes = mapData.nodes.length;
-  
-  // Random start location selected anywhere from all 168 nodes
   const startIdx = Math.floor(Math.random() * numNodes);
   
   const typeKeys = Object.keys(PROV_TYPES);
@@ -402,14 +432,14 @@ function freshState(){
       defense: isPlayer ? 20 : 15 + Math.floor(Math.random() * 25),
       econLvl: 1,
       indLvl: 1,
-      fortLvl: 1,
-      lastGrowth: Date.now()
+      fortLvl: 1
     });
   }
 
   return {
     mapData,
     startIdx,
+    selectedPreset: 10,
     troops: 25, supplies: 30, totalMinutes: 0, sessionStart: null,
     provinces, marches: [], log: ["Campaign commenced across 168 lands. Your domain awaits!"],
     lastPassiveTick: Date.now(), lastAITick: Date.now()
@@ -417,13 +447,11 @@ function freshState(){
 }
 
 function getEconYield(p){
-  const base = PROV_TYPES[p.type].econBase;
-  return base + (p.econLvl - 1) * 3;
+  return PROV_TYPES[p.type].econBase + (p.econLvl - 1) * 3;
 }
 
 function getIndYield(p){
-  const base = PROV_TYPES[p.type].indBase;
-  return base + (p.indLvl - 1) * 3;
+  return PROV_TYPES[p.type].indBase + (p.indLvl - 1) * 3;
 }
 
 function load(){
@@ -432,6 +460,7 @@ function load(){
   else { state = freshState(); }
   if(!state.marches) state.marches = [];
   if(!state.log) state.log = [];
+  if(!state.selectedPreset) state.selectedPreset = 10;
   if(!state.lastPassiveTick) state.lastPassiveTick = Date.now();
   if(!state.lastAITick) state.lastAITick = Date.now();
   
@@ -561,10 +590,16 @@ function isAttackable(p){
 }
 function isRevealed(p){ if(p.owner==='player') return true; return isAttackable(p); }
 function fmtNum(n){ return Math.round(n).toLocaleString(); }
+function pad(n){ return n.toString().padStart(2,'0'); }
+
+// Updated to display Minutes AND Seconds precisely
 function fmtDuration(ms){
-  const totalMin = Math.max(0, Math.ceil(ms/60000));
-  const h = Math.floor(totalMin/60), m = totalMin%60;
-  return h>0 ? (h+'h '+m+'m') : (m+'m');
+  const totalSec = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  if(h > 0) return `${h}h ${pad(m)}m ${pad(s)}s`;
+  return `${m}m ${pad(s)}s`;
 }
 
 function renderStats(){
@@ -611,7 +646,9 @@ function renderMap(){
     node.style.top = pos.y+'px';
 
     node.innerHTML = `<span class="type-icon">${typeInfo.icon}</span>`;
-    node.onclick = () => selectProvince(p.id);
+    node.onclick = () => {
+      if(!dragMoved) selectProvince(p.id);
+    };
     container.appendChild(node);
 
     if(revealed){
@@ -646,8 +683,11 @@ function renderMap(){
 
 function scrollToNode(id){
   const el = document.getElementById(`node-${id}`);
-  if(el){
-    el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+  const viewport = document.getElementById('mapViewport');
+  if(el && viewport && state.mapData.nodes[id]){
+    const nodeData = state.mapData.nodes[id];
+    viewport.scrollLeft = nodeData.x - viewport.clientWidth / 2;
+    viewport.scrollTop = nodeData.y - viewport.clientHeight / 2;
   }
 }
 
@@ -804,6 +844,89 @@ function renderLog(){
   list.innerHTML = state.log.map(l=>'<div>'+l+'</div>').join('');
 }
 
+function selectPreset(mins){
+  if(state.sessionStart) return;
+  state.selectedPreset = mins;
+  save();
+  
+  document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+  const targetBtn = document.getElementById(`preset-${mins}`);
+  if(targetBtn) targetBtn.classList.add('active');
+  
+  tickTimerDisplay();
+}
+
+function startSession(){
+  state.sessionStart = Date.now();
+  save();
+  
+  document.querySelectorAll('.preset-btn').forEach(btn => btn.style.pointerEvents = 'none');
+  document.getElementById('startBtn').style.display='none';
+  document.getElementById('stopBtn').style.display='inline-block';
+  
+  if(!timerInterval) timerInterval = setInterval(secondTick, 1000);
+  tickTimerDisplay();
+}
+
+function stopSession(){
+  if(!state.sessionStart) return;
+  if(!confirm("Abandon this study session? Progress towards this target will be lost.")) return;
+  
+  state.sessionStart = null;
+  save();
+  
+  document.querySelectorAll('.preset-btn').forEach(btn => btn.style.pointerEvents = 'auto');
+  document.getElementById('startBtn').style.display='inline-block';
+  document.getElementById('stopBtn').style.display='none';
+  tickTimerDisplay();
+}
+
+function finishSession(){
+  const preset = STUDY_PRESETS[state.selectedPreset] || STUDY_PRESETS[10];
+  state.troops += preset.troops;
+  state.supplies += preset.supplies;
+  state.totalMinutes += preset.mins;
+  state.sessionStart = null;
+  
+  addLog(`📖 Study Goal Completed! Gained +${preset.troops} troops and +${preset.supplies} supplies.`);
+  save();
+  
+  document.querySelectorAll('.preset-btn').forEach(btn => btn.style.pointerEvents = 'auto');
+  document.getElementById('startBtn').style.display='inline-block';
+  document.getElementById('stopBtn').style.display='none';
+  
+  renderAll();
+  alert(`Study goal completed!\n\nReward Claimed:\n+${preset.troops} Troops\n+${preset.supplies} Supplies`);
+}
+
+function tickTimerDisplay(){
+  const presetMins = state.selectedPreset || 10;
+  const targetMs = presetMins * 60 * 1000;
+  
+  if(!state.sessionStart){
+    document.getElementById('timerDisplay').textContent = pad(presetMins) + ':00';
+    return;
+  }
+  
+  const elapsedMs = Date.now() - state.sessionStart;
+  const remainMs = Math.max(0, targetMs - elapsedMs);
+  
+  const totalSec = Math.ceil(remainMs / 1000);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  
+  document.getElementById('timerDisplay').textContent = pad(m) + ':' + pad(s);
+
+  if(remainMs <= 0){
+    finishSession();
+  }
+}
+
+function secondTick(){
+  tickTimerDisplay();
+  renderMarches();
+}
+
 function newCampaign(){
   if(!confirm('Start a new campaign? A fresh 168-province map will generate with a randomized starting position.')) return;
   const totalMinutes = state.totalMinutes;
@@ -816,36 +939,42 @@ function newCampaign(){
   setTimeout(() => scrollToNode(state.startIdx), 100);
 }
 
-function pad(n){ return n.toString().padStart(2,'0'); }
-function tickTimerDisplay(){
-  if(!state.sessionStart){ document.getElementById('timerDisplay').textContent='00:00'; return; }
-  const elapsed = Math.floor((Date.now()-state.sessionStart)/1000);
-  const m = Math.floor(elapsed/60), s = elapsed%60;
-  document.getElementById('timerDisplay').textContent = pad(m)+':'+pad(s);
-}
+// Drag to Pan Implementation for Map Viewport
+function setupMapPan(){
+  const viewport = document.getElementById('mapViewport');
+  let startX, startY, scrollLeft, scrollTop;
 
-function startSession(){
-  state.sessionStart = Date.now();
-  save();
-  document.getElementById('startBtn').style.display='none';
-  document.getElementById('stopBtn').style.display='inline-block';
-  timerInterval = setInterval(tickTimerDisplay, 1000);
-  tickTimerDisplay();
-}
+  viewport.addEventListener('mousedown', (e) => {
+    isDraggingMap = true;
+    dragMoved = false;
+    startX = e.pageX - viewport.offsetLeft;
+    startY = e.pageY - viewport.offsetTop;
+    scrollLeft = viewport.scrollLeft;
+    scrollTop = viewport.scrollTop;
+  });
 
-function stopSession(){
-  if(!state.sessionStart) return;
-  const elapsedMin = (Date.now()-state.sessionStart)/60000;
-  state.troops += Math.round(elapsedMin*TROOPS_PER_MIN);
-  state.supplies += Math.round(elapsedMin*SUPPLIES_PER_MIN);
-  state.totalMinutes += elapsedMin;
-  state.sessionStart = null;
-  clearInterval(timerInterval);
-  save();
-  document.getElementById('startBtn').style.display='inline-block';
-  document.getElementById('stopBtn').style.display='none';
-  tickTimerDisplay();
-  renderAll();
+  viewport.addEventListener('mouseleave', () => {
+    isDraggingMap = false;
+  });
+
+  viewport.addEventListener('mouseup', () => {
+    isDraggingMap = false;
+  });
+
+  viewport.addEventListener('mousemove', (e) => {
+    if(!isDraggingMap) return;
+    e.preventDefault();
+    const x = e.pageX - viewport.offsetLeft;
+    const y = e.pageY - viewport.offsetTop;
+    const walkX = (x - startX);
+    const walkY = (y - startY);
+    
+    if(Math.abs(walkX) > 4 || Math.abs(walkY) > 4){
+      dragMoved = true;
+    }
+    viewport.scrollLeft = scrollLeft - walkX;
+    viewport.scrollTop = scrollTop - walkY;
+  });
 }
 
 function renderAll(){
@@ -855,17 +984,23 @@ function renderAll(){
   renderActionPanel();
   renderMarches();
   renderLog();
+  
+  selectPreset(state.selectedPreset || 10);
   if(state.sessionStart){
+    document.querySelectorAll('.preset-btn').forEach(btn => btn.style.pointerEvents = 'none');
     document.getElementById('startBtn').style.display='none';
     document.getElementById('stopBtn').style.display='inline-block';
-    if(!timerInterval) timerInterval = setInterval(tickTimerDisplay, 1000);
   }
-  tickTimerDisplay();
 }
 
 load();
+setupMapPan();
 renderAll();
 setTimeout(() => scrollToNode(state.startIdx), 200);
+
+if(!timerInterval){
+  timerInterval = setInterval(secondTick, 1000);
+}
 
 setInterval(()=>{
   applyPassive();
@@ -875,8 +1010,6 @@ setInterval(()=>{
   renderStats();
   renderMap();
   renderActionPanel();
-  renderMarches();
-  renderLog();
 }, 10000);
 </script>
 </body>
