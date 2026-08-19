@@ -244,6 +244,7 @@
       Empire Leaderboard
     </h2>
     <p class="sub">Realm standings based on current territory ownership across the 168 locations.</p>
+    <p class="sub" style="margin-top:-8px;">Rival empires keep no separate treasury — their industry output is both their war chest and their garrison strength, so provinces left unchallenged grow steadily harder to hold or take.</p>
     <div class="leaderboard-list" id="leaderboardList"></div>
   </div>
 
@@ -288,6 +289,7 @@
       The realm map (168 Locations)
     </h2>
     <p class="sub">Drag to pan, use mouse wheel or buttons to zoom in/out.</p>
+    <p class="sub" style="margin-top:-8px;">Sieges only reach provinces bordering your territory — march time is a flat 4 minutes no matter how far the province looks on the map.</p>
     
     <div class="map-wrapper">
       <div class="map-controls">
@@ -441,6 +443,8 @@ function generateMapLayout(){
 }
 
 const SIEGE_SUPPLY_COST = 12;
+// Sieges are only launchable against provinces one hop from your territory (see isAttackable()),
+// so march time is a flat per-hop duration rather than scaling with map distance. Intentional, not a bug.
 const PER_HOP_MARCH_MS = 4 * 60 * 1000;
 
 let adjacency = [];
@@ -552,6 +556,10 @@ function applyAI(){
   const enemyProvinces = state.provinces.filter(p => p.owner !== 'player');
   if(!enemyProvinces.length) return;
 
+  // AI empires have no separate troop pool like the player does — industry yield feeds
+  // p.defense directly, so it's simultaneously their war chest and garrison strength.
+  // Deliberately simpler than the player's economy, and means unchallenged AI provinces
+  // get harder to both hold onto (for them) and conquer (for you) the longer they sit.
   enemyProvinces.forEach(p => {
     const ind = getIndYield(p);
     p.defense += (ind * (elapsedMinutes / 60));
@@ -635,6 +643,8 @@ function addLog(text){
   if(state.log.length > 10) state.log.length = 10;
 }
 
+// Gates which provinces can be sieged: must directly border a player-owned province (one hop).
+// This is what makes the flat PER_HOP_MARCH_MS march time correct — you're never marching further than one hop.
 function isAttackable(p){
   if(p.owner === 'player') return false;
   const nbrs = adjacency[p.id] || [];
